@@ -1,0 +1,1072 @@
+---
+swagger: "2.0"
+info:
+  description: "Afea Device Manager API"
+  version: "1.5.0-SNAPSHOT"
+  title: "Afea Device Manager API"
+tags:
+- name: "Bundle"
+- name: "Document"
+- name: "HSM"
+- name: "Operation"
+- name: "Printer"
+- name: "Session"
+paths:
+  /bundles:
+    get:
+      tags:
+      - "Bundle"
+      summary: "List bundles"
+      description: "Restituisce l'elenco dei bundle della sessione corrente"
+      operationId: "getBundles"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/BundleCollection"
+    post:
+      tags:
+      - "Bundle"
+      summary: "Create bundle"
+      description: "Creazione di un nuovo bundle per la sessione utente corrente"
+      operationId: "createBundle"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "documenti e operazioni del bundle"
+        required: false
+        schema:
+          $ref: "#/definitions/Bundle"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreatedItemId"
+        201:
+          description: ""
+        400:
+          description: "Bad Request"
+        429:
+          description: "Too Many Requests"
+  /bundles/{bundleId}/documents:
+    get:
+      tags:
+      - "Document"
+      summary: "List documents"
+      description: "Restituisce l'elenco dei documenti del bundle specificato"
+      operationId: "getDocuments"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene il documento"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/DocumentCollection"
+    post:
+      tags:
+      - "Document"
+      summary: "Create document"
+      description: "Aggiunta di un nuovo documento a un bundle esistente"
+      operationId: "createDocument"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui aggiungere il documento"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "attributi del documento"
+        required: false
+        schema:
+          $ref: "#/definitions/Document"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreatedItemId"
+        201:
+          description: ""
+  /bundles/{bundleId}/documents/{documentId}:
+    get:
+      tags:
+      - "Document"
+      summary: "Get document"
+      description: "Restituisce i dettagli del documento specificato"
+      operationId: "getDocument"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene il documento"
+        required: true
+        type: "string"
+      - name: "documentId"
+        in: "path"
+        description: "id del documento da restituire"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Document"
+    delete:
+      tags:
+      - "Document"
+      summary: "Delete document"
+      description: "Elimina il documento specificato, rimuovendolo dal bundle a cui\
+        \ appartiene. Tutte le operazioni in corso sul documento vengono annullate."
+      operationId: "deleteDocument"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene il documento"
+        required: true
+        type: "string"
+      - name: "documentId"
+        in: "path"
+        description: "id del documento da eliminare"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+  /bundles/{bundleId}/documents/{documentId}/content:
+    get:
+      tags:
+      - "Document"
+      summary: "Get document content"
+      description: "Restituisce il file del documento specificato"
+      operationId: "getDocumentContent"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene il documento"
+        required: true
+        type: "string"
+      - name: "documentId"
+        in: "path"
+        description: "id del documento da restituire"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+              format: "byte"
+  /bundles/{bundleId}/operations:
+    get:
+      tags:
+      - "Operation"
+      summary: "List operations"
+      description: "Restituisce l'elenco delle operazioni del bundle specificato"
+      operationId: "getOperations"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene l'operazione"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/OperationCollection"
+    post:
+      tags:
+      - "Operation"
+      summary: "Create operation"
+      description: "Aggiunta di una nuova operazione a un bundle esistente"
+      operationId: "createOperation"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui aggiungere l'operazione"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "attributi dell'operazione"
+        required: false
+        schema:
+          $ref: "#/definitions/Operation"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreatedItemId"
+        201:
+          description: ""
+  /bundles/{bundleId}/operations/{operationId}:
+    get:
+      tags:
+      - "Operation"
+      summary: "Get operation"
+      description: "Restituisce i dettagli dell'operazione specificata"
+      operationId: "getOperation"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene l'operazione"
+        required: true
+        type: "string"
+      - name: "operationId"
+        in: "path"
+        description: "id dell'operazione da restituire"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Operation"
+    put:
+      tags:
+      - "Operation"
+      summary: "Put operation"
+      description: "modifica dell'operazione"
+      operationId: "updateOperation"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene l'operazione"
+        required: true
+        type: "string"
+      - name: "operationId"
+        in: "path"
+        description: "id dell'operazione da restituire"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/OperationUpdate"
+      responses:
+        default:
+          description: "successful operation"
+    delete:
+      tags:
+      - "Operation"
+      summary: "Delete operation"
+      description: "Elimina l'operazione specificata, interrompendola ed annullandola\
+        \ se non ancora completata."
+      operationId: "deleteOperation"
+      parameters:
+      - name: "bundleId"
+        in: "path"
+        description: "id del bundle a cui appartiene l'operazione"
+        required: true
+        type: "string"
+      - name: "operationId"
+        in: "path"
+        description: "id dell'operazione da eliminare"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+  /bundles/{id}:
+    get:
+      tags:
+      - "Bundle"
+      summary: "Get bundle"
+      description: "Restituisce le informazioni di dettaglio riguardo il bundle specificato"
+      operationId: "getBundle"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id del bundle da restituire"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Bundle"
+    delete:
+      tags:
+      - "Bundle"
+      summary: "Delete bundle"
+      description: "Elimina il bundlee specificato, rimuovendolo dalla sessione corrente.\
+        \ Tutti gli oggetti associati al bundle vengono cancellati, tutte le risorse\
+        \ ad esso direttamente o indirettamente associati vengono rilasciate e tutte\
+        \ le operazioni ad esso legate vengono interrotte e/o annullate"
+      operationId: "deleteBundle"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id del bundle da eliminare"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+  /hsm:
+    get:
+      tags:
+      - "HSM"
+      summary: "List of HSM"
+      description: "Restituisce l'elenco dei dispositivi di firma locali o remoti"
+      operationId: "getHsmList"
+      parameters:
+      - name: "local"
+        in: "query"
+        required: false
+        type: "boolean"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/HsmCollection"
+  /hsm/{id}:
+    get:
+      tags:
+      - "HSM"
+      summary: "Get HSM"
+      description: "Restituisce le informazioni di dettaglio riguardo il dispositivo\
+        \ di firma specificato"
+      operationId: "getHsmDetails"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id del dispositivo di firma da restituire"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/HsmForDetails"
+  /hsm/{id}/logout:
+    post:
+      tags:
+      - "HSM"
+      summary: "Logout HSM"
+      description: "Forza il logout sul dispositivo di firma specificato"
+      operationId: "logoutHsm"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "l’id del dispositivo di firma per il quale deve essere effettuato\
+          \ il logout"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+  /printers:
+    get:
+      tags:
+      - "Printer"
+      summary: "List of printer"
+      description: "Restituisce l'elenco delle stampanti locali e remoti"
+      operationId: "getPrinterList"
+      parameters:
+      - name: "local"
+        in: "query"
+        required: false
+        type: "boolean"
+      - name: "detail"
+        in: "query"
+        required: false
+        type: "boolean"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PrinterCollectionPrinterBase"
+  /printers/{id}:
+    get:
+      tags:
+      - "Printer"
+      summary: "Get printer"
+      description: "Restituisce le informazioni di dettaglio riguardo il dispositivo\
+        \ di firma specificato"
+      operationId: "getPrinterDetails"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id del dispositivo di firma da restituire"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Printer"
+  /printers/{id}/queue:
+    get:
+      tags:
+      - "Printer"
+      summary: "Get printer queue detail"
+      description: "Restituisce la coda di stampa per la stampante specificata"
+      operationId: "getPrintQueue"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id della stampante"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PrintJobCollection"
+  /sessions:
+    get:
+      tags:
+      - "Session"
+      summary: "List sessions"
+      description: "Restituisce l'elenco delle sessioni attive"
+      operationId: "getSessions"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/SessionCollection"
+  /sessions/{id}:
+    get:
+      tags:
+      - "Session"
+      summary: "Get session"
+      description: "Restituisce i dettagli della sessione utente specificata"
+      operationId: "getSession"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id della sessione da restituire, il valore speciale \"self\"\
+          \ identifica la sessione in cui è stata fatta la richiesta"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Session"
+    delete:
+      tags:
+      - "Session"
+      summary: "Delete session"
+      description: "Elimina la sessione specificata, rimuovendo anche tutti gli oggetti\
+        \ ad essa associati, effettuando il rilascio di tutte le risorse eventualmente\
+        \ ad essa direttamente o indirettamente allocate ed interrompendo e/o annullando\
+        \ ogni operazione ad essa legata"
+      operationId: "deleteSession"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id della sessione da eliminare, il valore speciale \"self\"\
+          \ identifica la sessione in cui è stata fatta la richiesta"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+definitions:
+  Bundle:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "id del bundle"
+        readOnly: true
+      documents:
+        type: "array"
+        description: "elenco dei documenti contenuti nel bundle ordinati per priorità\
+          \ di processamento: il primo documento dell'array è il primo ad essere processato"
+        items:
+          $ref: "#/definitions/Document"
+      operations:
+        type: "array"
+        description: "elenco delle operazioni associate al bundle"
+        items:
+          $ref: "#/definitions/Operation"
+      processingState:
+        type: "string"
+        description: "stato del bundle"
+        readOnly: true
+        enum:
+        - "IDLE"
+        - "PENDING"
+        - "WORKING"
+        - "PAUSED"
+        - "COMPLETED"
+        - "ERROR"
+      creationTime:
+        type: "string"
+        format: "date-time"
+        description: "istante di creazione del bundle"
+        readOnly: true
+      lastActivityTime:
+        type: "string"
+        format: "date-time"
+        description: "istante dell'ultimo utilizzo del bundle"
+        readOnly: true
+    description: "Document bundle"
+  BundleCollection:
+    type: "object"
+    properties:
+      bundles:
+        type: "array"
+        description: "Elenco dei bundle"
+        items:
+          $ref: "#/definitions/Bundle"
+    description: "Collection of bundles"
+  CreatedItemId:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "id dell'elemento creato"
+    description: "Id di un elemento appena creato"
+  Credentials:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        description: "username"
+      password:
+        type: "string"
+        description: "password"
+      pin:
+        type: "string"
+        description: "pin"
+    description: "credenziali di accesso al dispositivo, disponibili in sola scrittura:\
+      \ non vengono mai restituite da una GET"
+  Document:
+    type: "object"
+    required:
+    - "content"
+    - "documentType"
+    properties:
+      id:
+        type: "string"
+        description: "id del documento"
+        readOnly: true
+      documentClientId:
+        type: "string"
+        description: "id del documento assegnato dal client"
+      documentType:
+        type: "string"
+        description: "tipo di documento / tipo di contenuto del documento"
+        enum:
+        - "PDF"
+        - "RAW"
+        - "URI"
+      content:
+        type: "string"
+        description: "contenuto del documento. Se documentType vale 'URI', contiene\
+          \ la URI attraverso la quale è possibile accedere al documento. Altrimenti\
+          \ contiene il contenuto del documento in formato Base64"
+      processingState:
+        type: "string"
+        description: "stato del documento"
+        readOnly: true
+        enum:
+        - "IDLE"
+        - "PENDING"
+        - "WORKING"
+        - "PAUSED"
+        - "COMPLETED"
+        - "ERROR"
+      creationTime:
+        type: "string"
+        format: "date-time"
+        description: "istante di creazione del documento"
+        readOnly: true
+      lastActivityTime:
+        type: "string"
+        format: "date-time"
+        description: "istante dell'ultimo utilizzo del documento"
+        readOnly: true
+    description: "Documento"
+  DocumentCollection:
+    type: "object"
+    properties:
+      documents:
+        type: "array"
+        description: "Elenco dei documenti"
+        items:
+          $ref: "#/definitions/Document"
+    description: "Collection of documents"
+  HsmCollection:
+    type: "object"
+    properties:
+      hsmList:
+        type: "array"
+        description: "Elenco degli HSM"
+        items:
+          $ref: "#/definitions/HsmForList"
+    description: "Collection of HSM"
+  HsmFeatures:
+    type: "object"
+    properties:
+      keyList:
+        type: "boolean"
+        description: "Indica se l'HSM supporta la restituzione dell'elenco delle chiavi\
+          \ di cifratura disponibili o meno. Se keyList è false, l'attributo keys\
+          \ restituirà sempre un elenco vuoto."
+        readOnly: true
+      logout:
+        type: "boolean"
+        description: "Indica se l'HSM supporta l'operazione di logout."
+        readOnly: true
+    description: "Feature del dispositivo di firma"
+  HsmForDetails:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Id del dispositivo di firma"
+        readOnly: true
+      type:
+        type: "string"
+        description: "Tipo di dispositivo di firma"
+        readOnly: true
+        enum:
+        - "USB_TOKEN"
+        - "SMARTCARD"
+        - "NETWORK_HSM"
+      local:
+        type: "boolean"
+        description: "Indica se il dispositivo di firma è locale o di rete"
+        readOnly: true
+      state:
+        type: "string"
+        description: "Id del dispositivo di firma"
+        readOnly: true
+        enum:
+        - "LOGGED_IN"
+        - "LOGGED_OUT"
+      features:
+        description: "Feature del dispositivo di firma"
+        readOnly: true
+        $ref: "#/definitions/HsmFeatures"
+      keys:
+        type: "array"
+        description: "Elenco delle chiavi con dettagli disponibili nel dispositivo\
+          \ di firma"
+        readOnly: true
+        items:
+          $ref: "#/definitions/HsmKey"
+    description: "HSM for details"
+  HsmForList:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Id del dispositivo di firma"
+        readOnly: true
+      type:
+        type: "string"
+        description: "Tipo di dispositivo di firma"
+        readOnly: true
+        enum:
+        - "USB_TOKEN"
+        - "SMARTCARD"
+        - "NETWORK_HSM"
+      local:
+        type: "boolean"
+        description: "Indica se il dispositivo di firma è locale o di rete"
+        readOnly: true
+      state:
+        type: "string"
+        description: "Id del dispositivo di firma"
+        readOnly: true
+        enum:
+        - "LOGGED_IN"
+        - "LOGGED_OUT"
+      features:
+        description: "Feature del dispositivo di firma"
+        readOnly: true
+        $ref: "#/definitions/HsmFeatures"
+      keys:
+        type: "array"
+        description: "Elenco delle chiavi disponibili nel dispositivo di firma"
+        readOnly: true
+        items:
+          type: "string"
+    description: "HSM for list"
+  HsmKey:
+    type: "object"
+    properties:
+      alias:
+        type: "string"
+        description: "Alias delle chiavi del dispositivo utilizzabili per la firma"
+        readOnly: true
+      algorithm:
+        type: "string"
+        description: "Algoritmo utilizzato dalla chiave"
+        readOnly: true
+      format:
+        type: "string"
+        description: "Formato di codifica primaria della chiave"
+        readOnly: true
+      authenticationType:
+        type: "string"
+        description: "Indica le modalità di autenticazione per la chiave"
+        readOnly: true
+        enum:
+        - "LOCAL"
+        - "PIN"
+        - "PASSWORD"
+        - "USERNAME_AND_PASSWORD"
+      signerId:
+        type: "string"
+        description: "Identificativo del firmatario"
+        readOnly: true
+    description: "HSM Key Alias"
+  Label:
+    type: "object"
+    properties:
+      text:
+        type: "string"
+        description: "testo dell'etichetta"
+    description: "etichetta visibile nel documento che attesta l'avvenuta firma"
+  Operation:
+    type: "object"
+    required:
+    - "operationType"
+    properties:
+      id:
+        type: "string"
+        description: "id dell'operazione"
+        readOnly: true
+      operationType:
+        type: "string"
+        description: "tipo di operazione"
+        enum:
+        - "SIGN"
+        - "PRINT"
+      signature:
+        description: "dettagli dell'operazione di firma/marcatura temporale: assente\
+          \ per operazioni di altro tipo"
+        $ref: "#/definitions/Signature"
+      printer:
+        description: "dettagli dell'operazione di stampa: assente per operazioni di\
+          \ altro tipo"
+        $ref: "#/definitions/PrinterBase"
+      outputBundleId:
+        type: "string"
+        description: "id del bundle di output contenente i documenti dopo il processamento"
+        readOnly: true
+      documents:
+        type: "array"
+        description: "documenti a cui l'operazione viene applicata"
+        items:
+          $ref: "#/definitions/OperationDocumentState"
+      processingState:
+        type: "string"
+        description: "stato dell'operazione"
+        readOnly: true
+        enum:
+        - "IDLE"
+        - "PENDING"
+        - "WORKING"
+        - "PAUSED"
+        - "COMPLETED"
+        - "ERROR"
+      creationTime:
+        type: "string"
+        format: "date-time"
+        description: "istante di creazione dell'operazione"
+        readOnly: true
+      lastActivityTime:
+        type: "string"
+        format: "date-time"
+        description: "istante dell'ultima attività dell'operazione"
+        readOnly: true
+    description: "Operazione"
+  OperationCollection:
+    type: "object"
+    properties:
+      operations:
+        type: "array"
+        description: "Elenco delle operazioni"
+        items:
+          $ref: "#/definitions/Operation"
+    description: "Collection of operations"
+  OperationDocumentState:
+    type: "object"
+    required:
+    - "id"
+    - "processingState"
+    properties:
+      id:
+        type: "string"
+        description: "id del documento"
+      processingState:
+        type: "string"
+        description: "stato di processamento del documento nell'ambito dell'operazione"
+        enum:
+        - "IDLE"
+        - "PENDING"
+        - "WORKING"
+        - "PAUSED"
+        - "COMPLETED"
+        - "ERROR"
+      processingDetails:
+        type: "string"
+        description: "dettagli aggiuntivi dello stato di processamento, in particolare\
+          \ il messaggio di errore quando processingState è ERROR"
+      processingDate:
+        type: "string"
+        format: "date-time"
+        description: "istante in cui è completato il processamento del documento\
+          \ (presente solo se processingState è \"COMPLETED\" o \"ERROR\")"
+      printOptions:
+        description: "opzioni di stampa"
+        $ref: "#/definitions/PrintOptions"
+      printProgress:
+        type: "integer"
+        format: "int64"
+        description: "progresso stampa"
+    description: "Dettagli dell'applicazione di una operazione ad un documento"
+  OperationUpdate:
+    type: "object"
+    properties:
+      processingState:
+        type: "string"
+        description: "nuovo stato dell'operazione"
+        enum:
+        - "PENDING"
+        - "PAUSED"
+    description: "update dell'Operazione"
+  PrintJob:
+    type: "object"
+    required:
+    - "bundleId"
+    - "documentId"
+    - "operationId"
+    properties:
+      bundleId:
+        type: "string"
+        description: "id del bundle"
+      operationId:
+        type: "string"
+        description: "id dell'operazione"
+      documentId:
+        type: "string"
+        description: "id del documento"
+      printProgress:
+        type: "integer"
+        format: "int64"
+        description: "progresso di stampa"
+      processingDetails:
+        type: "string"
+        description: "dettagli sul processamento"
+      submitDate:
+        type: "string"
+        format: "date-time"
+        description: "istante di inoltro alla stampante"
+      processingDate:
+        type: "string"
+        format: "date-time"
+        description: "istante di processamento della stampa"
+      processingState:
+        type: "string"
+        description: "stato della stampa"
+        enum:
+        - "IDLE"
+        - "PENDING"
+        - "WORKING"
+        - "PAUSED"
+        - "COMPLETED"
+        - "ERROR"
+      printOptions:
+        description: "opzioni della stampa"
+        $ref: "#/definitions/PrintOptions"
+    description: "Print Job"
+  PrintJobCollection:
+    type: "object"
+    properties:
+      printJobs:
+        type: "array"
+        description: "Elenco dei PrintJob"
+        items:
+          $ref: "#/definitions/PrintJob"
+    description: "Collection of PrintJob"
+  PrintOptions:
+    type: "object"
+    required:
+    - "duplex"
+    properties:
+      autoResize:
+        type: "boolean"
+        description: "opzione di autoresize"
+      duplex:
+        type: "string"
+        description: "fronte retro"
+        enum:
+        - "NO_DUPLEX"
+        - "LONG_EDGE"
+        - "SHORT_EDGE"
+      paperSize:
+        type: "string"
+        description: "formato pagina"
+      paperSource:
+        type: "string"
+        description: "sorgente carta"
+      showDialog:
+        type: "boolean"
+        description: "dialog di stampa"
+    description: "Print Options"
+  Printer:
+    type: "object"
+    required:
+    - "id"
+    - "local"
+    - "printerType"
+    properties:
+      id:
+        type: "string"
+        description: "Id stampante"
+      printerType:
+        type: "string"
+        description: "Tipo stampante"
+        enum:
+        - "GENERAL_PURPOSE"
+        - "ZEBRA"
+      local:
+        type: "boolean"
+        description: "Indica se il dispositivo di stampa è locale o di rete"
+      printerState:
+        type: "string"
+        description: "Stato della stampante"
+        readOnly: true
+        enum:
+        - "IDLE"
+        - "BUSY"
+        - "OFFLINE"
+        - "OUT_OF_PAPER"
+        - "FAULT"
+      paperSizes:
+        type: "array"
+        description: "Elenco dei formati pagina associati alla stampante"
+        readOnly: true
+        items:
+          type: "string"
+      paperSources:
+        type: "array"
+        description: "Elenco delle sorgenti carta/cassetti alla stampante"
+        readOnly: true
+        items:
+          type: "string"
+      duplexSupported:
+        type: "boolean"
+        description: "Indica se la stampante supporta il fronte/retro"
+        readOnly: true
+      default:
+        type: "boolean"
+        description: "Indica se la stampante è quella di default"
+        readOnly: true
+    description: "Printer"
+  PrinterBase:
+    type: "object"
+    required:
+    - "id"
+    - "local"
+    - "printerType"
+    properties:
+      id:
+        type: "string"
+        description: "Id stampante"
+      printerType:
+        type: "string"
+        description: "Tipo stampante"
+        enum:
+        - "GENERAL_PURPOSE"
+        - "ZEBRA"
+      local:
+        type: "boolean"
+        description: "Indica se il dispositivo di stampa è locale o di rete"
+    description: "Printer Base"
+  PrinterCollection:
+    type: "object"
+    properties:
+      printers:
+        type: "array"
+        description: "Elenco delle stampanti"
+        items:
+          $ref: "#/definitions/PrinterBase"
+    description: "Collection of Printer"
+  PrinterCollectionPrinterBase:
+    type: "object"
+    properties:
+      printers:
+        type: "array"
+        description: "Elenco delle stampanti"
+        items:
+          $ref: "#/definitions/PrinterBase"
+    description: "Collection of Printer"
+  PrinterCompleteCollection:
+    allOf:
+    - $ref: "#/definitions/PrinterCollection"
+    - type: "object"
+      properties:
+        printers:
+          type: "array"
+          description: "Elenco delle stampanti"
+          items:
+            $ref: "#/definitions/Printer"
+      description: "Collection of Printer with full detail"
+  Session:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "id della sessione"
+      creationTime:
+        type: "string"
+        format: "date-time"
+        description: "istante di creazione della sessione"
+      lastActivityTime:
+        type: "string"
+        format: "date-time"
+        description: "istante dell'ultimo utilizzo della sessione"
+    description: "User session"
+  SessionCollection:
+    type: "object"
+    properties:
+      sessions:
+        type: "array"
+        description: "Elenco delle sessioni"
+        items:
+          $ref: "#/definitions/Session"
+    description: "Collection of user sessions"
+  Signature:
+    type: "object"
+    required:
+    - "hsmId"
+    - "keyAlias"
+    properties:
+      hsmId:
+        type: "string"
+        description: "id del dispositivo di firma/marcatura"
+      keyAlias:
+        type: "string"
+        description: "chiave da utilizzare per l'operazione"
+      reason:
+        type: "string"
+        description: "motivo dell'operazione (motivo della firma e/o della marcatura)"
+      location:
+        type: "string"
+        description: "luogo in cui è avvenuta l'operazione"
+      credentials:
+        description: "credenziali di accesso al dispositivo, disponibili in sola scrittura:\
+          \ non vengono mai restituite da una GET"
+        $ref: "#/definitions/Credentials"
+      label:
+        description: "etichetta visibile nel documento che attesta l'avvenuta firma"
+        $ref: "#/definitions/Label"
+    description: "Signature/timestamp details"
